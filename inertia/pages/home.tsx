@@ -58,36 +58,46 @@ export default function Home() {
         <div className="flex flex-col m-4">
           <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
             <input ref={fileRef} type="file" />
-            <Select.Root onValueChange={(value) => setLanguage(value)} defaultValue="french">
-              <Select.Trigger />
-              <Select.Content>
-                <Select.Item value="french">Français</Select.Item>
-                <Select.Item value="english">Anglais</Select.Item>
-                <Select.Item value="dutch">Néerlandais</Select.Item>
-                <Select.Item value="german">Allemand</Select.Item>
-              </Select.Content>
-            </Select.Root>
-            <Select.Root
-              onValueChange={(value) => setModel(value)}
-              defaultValue={OpenAIModels.GPT35Turbo}
-            >
-              <Select.Trigger />
-              <Select.Content>
-                <Select.Group>
-                  <Select.Label>OPEN AI</Select.Label>
-                  <Select.Item value={OpenAIModels.GPT35Turbo}>GPT 3.5 Turbo</Select.Item>
-                  <Select.Item value={OpenAIModels.GPT4oMini}>GPT 4o-mini</Select.Item>
-                  <Select.Item value={OpenAIModels.GPT4o}>GPT 4o</Select.Item>
-                </Select.Group>
-                <Select.Separator />
-                <Select.Group>
-                  <Select.Label>MISTRAL</Select.Label>
-                  <Select.Item value={MistralModels.Nemo}>Mistral Nemo</Select.Item>
-                  <Select.Item value={MistralModels.Small}>Mistral Small</Select.Item>
-                  <Select.Item value={MistralModels.Large}>Mistral Large</Select.Item>
-                </Select.Group>
-              </Select.Content>
-            </Select.Root>
+            <Flex direction="column" gap="2">
+              <label htmlFor="language">Summary language</label>
+              <Select.Root
+                name="language"
+                onValueChange={(value) => setLanguage(value)}
+                defaultValue="french"
+              >
+                <Select.Trigger />
+                <Select.Content>
+                  <Select.Item value="french">Français</Select.Item>
+                  <Select.Item value="english">Anglais</Select.Item>
+                  <Select.Item value="dutch">Néerlandais</Select.Item>
+                  <Select.Item value="german">Allemand</Select.Item>
+                </Select.Content>
+              </Select.Root>
+            </Flex>
+            <Flex direction="column" gap="2">
+              <label htmlFor="model">Model</label>
+              <Select.Root
+                onValueChange={(value) => setModel(value)}
+                defaultValue={OpenAIModels.GPT35Turbo}
+              >
+                <Select.Trigger />
+                <Select.Content>
+                  <Select.Group>
+                    <Select.Label>OPEN AI</Select.Label>
+                    <Select.Item value={OpenAIModels.GPT35Turbo}>GPT 3.5 Turbo</Select.Item>
+                    <Select.Item value={OpenAIModels.GPT4oMini}>GPT 4o-mini</Select.Item>
+                    <Select.Item value={OpenAIModels.GPT4o}>GPT 4o</Select.Item>
+                  </Select.Group>
+                  <Select.Separator />
+                  <Select.Group>
+                    <Select.Label>MISTRAL</Select.Label>
+                    <Select.Item value={MistralModels.Nemo}>Mistral Nemo</Select.Item>
+                    <Select.Item value={MistralModels.Small}>Mistral Small</Select.Item>
+                    <Select.Item value={MistralModels.Large}>Mistral Large</Select.Item>
+                  </Select.Group>
+                </Select.Content>
+              </Select.Root>
+            </Flex>
             <Flex direction="column" gap="3">
               <label>Summary Prompt</label>
               <Flex gap="3">
@@ -143,7 +153,7 @@ export default function Home() {
           </form>
         </div>
         <div className="flex flex-col h-[100%] m-4">
-          <Heading as="h5">Résumé</Heading>
+          <Heading as="h5">Summary</Heading>
           <Skeleton loading={isLoading} height="500px">
             <Container>{summary}</Container>
           </Skeleton>
