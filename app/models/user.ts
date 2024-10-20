@@ -21,10 +21,13 @@ export default class User extends BaseModel {
   declare lagoServicesCreated: boolean
 
   @column()
-  declare lagoExternalCustomerId: string
+  declare lagoCustomerId: string
 
   @column()
-  declare lagoExternalSubscriptionId: string
+  declare lagoSubscriptionId: string
+
+  @column()
+  declare lagoWalletId: string | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

@@ -1,15 +1,22 @@
+import { useEffect, useState } from 'react'
 import { Link } from '@inertiajs/react'
-import { Avatar, Button } from '@radix-ui/themes'
+import { Avatar, Button, Progress } from '@radix-ui/themes'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import { InferPageProps } from '@adonisjs/inertia/types'
 import HomeController from '#controllers/home_controller'
 
+import env from '#start/env'
+
 type User = InferPageProps<HomeController, 'index'>
 
-const renderAuthenticatedHeader = ({ user }: User) => {
+const renderAuthenticatedHeader = (
+  user: User['user'],
+  usedCredits?: number,
+  totalCredits?: number
+) => {
   return (
     <div className="flex items-center justify-between w-full px-6 py-2 shadow-md">
-      <div className='flex items-center gap-10'>
+      <div className="flex items-center gap-10">
         <div className="flex flex-row items-center justify-around gap-2">
           <Avatar src={user!.avatarUrl} radius="full" fallback="Avatar" />
           <div className="font-bold">{user!.fullname}</div>
@@ -23,9 +30,18 @@ const renderAuthenticatedHeader = ({ user }: User) => {
           </li>
         </ul>
       </div>
-      <a href={`/logout`}>
-        <Button className="cursor-pointer">Logout</Button>
-      </a>
+      <div className="flex flex-row gap-2 items-center justify-center">
+        {usedCredits && totalCredits ? (
+          <div className="flex flex-row gap-2 items-center justify-center">
+            Credits usage: <Progress value={usedCredits / totalCredits} />
+          </div>
+        ) : (
+          ''
+        )}
+        <a href={`/logout`}>
+          <Button className="cursor-pointer">Logout</Button>
+        </a>
+      </div>
     </div>
   )
 }
@@ -44,5 +60,23 @@ const renderUnAuthenticatedHeader = () => {
 }
 
 export default function Header({ user }: User) {
-  return user ? renderAuthenticatedHeader({user}) : renderUnAuthenticatedHeader()
+  const [usedCredits, setUsedCredits] = useState(undefined)
+  const [totalCredits, setTotalCredits] = useState(undefined)
+
+  useEffect(() => {
+    if (!user) {
+      return
+    }
+
+    fetch(`${env.get('LAGO_URL')}/wallets/${user.lagoWalletId}`)
+      .then((response) => response.json())
+      .then((response) => {
+        setUsedCredits(response.consumed_credits)
+        setTotalCredits(response.credits_balance)
+      })
+  })
+
+  return user
+    ? renderAuthenticatedHeader(user, usedCredits, totalCredits)
+    : renderUnAuthenticatedHeader()
 }

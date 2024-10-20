@@ -7,8 +7,9 @@ export default class UserService {
       email: user.email,
       avatarUrl: user.avatarUrl,
       lagoServicesCreated: user.lagoServicesCreated,
-      lagoExternalCustomerId: user.lagoExternalCustomerId,
-      lagoExternalSubscriptionId: user.lagoExternalSubscriptionId,
+      lagoCustomerId: user.lagoCustomerId,
+      lagoSubscriptionId: user.lagoSubscriptionId,
+      lagoWalletId: user.lagoWalletId,
     }
   }
 }

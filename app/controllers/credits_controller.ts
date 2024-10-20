@@ -20,7 +20,16 @@ export default class CreditsController {
     const { amount } = request.qs()
     const { user } = auth
 
-    await this.lagoService.orderCredits(user!.lagoExternalCustomerId, amount)
+    if (!user) {
+      return
+    }
+
+    if (!user.lagoWalletId) {
+      user.lagoWalletId = await this.lagoService.createWallet(user.lagoCustomerId!, amount)
+    } else {
+      await this.lagoService.updateWallet(user.lagoWalletId, amount)
+    }
+
     return response.ok({})
   }
 }

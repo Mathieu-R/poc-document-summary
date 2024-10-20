@@ -48,19 +48,35 @@ export default class LagoService {
     return response.ok && lagoExternalSubscriptionId
   }
 
-  async orderCredits(customerId: string, credits: number) {
-    console.log(customerId, credits)
+  async createWallet(customerId: string, initialCredits: number) {
+    const response = await ky
+      .post<any>(`${env.get('LAGO_URL')}/wallets`, {
+        headers: {
+          authorization: `Bearer ${env.get('LAGO_KEY')}`,
+        },
+        json: {
+          wallet: {
+            rate_amount: WALLET_RATE_AMOUNT,
+            currency: 'EUR',
+            paid_credits: initialCredits,
+            external_customer_id: customerId,
+          },
+        },
+      })
+      .json()
 
-    return ky.post(`${env.get('LAGO_URL')}/wallets`, {
+    return response.lago_id
+  }
+
+  async updateWallet(walletId: string, credits: number) {
+    return ky.post(`${env.get('LAGO_URL')}/wallet_transactions`, {
       headers: {
         authorization: `Bearer ${env.get('LAGO_KEY')}`,
       },
       json: {
-        wallet: {
-          rate_amount: WALLET_RATE_AMOUNT,
-          currency: 'EUR',
+        wallet_transaction: {
+          wallet_id: walletId,
           paid_credits: credits,
-          external_customer_id: customerId,
         },
       },
     })

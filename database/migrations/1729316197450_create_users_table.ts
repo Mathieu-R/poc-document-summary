@@ -12,8 +12,9 @@ export default class extends BaseSchema {
       table.string('avatar_url').notNullable()
 
       table.boolean('lago_services_created').notNullable().defaultTo(false)
-      table.string('lago_external_customer_id').nullable()
-      table.string('lago_external_subscription_id').nullable()
+      table.string('lago_customer_id').notNullable
+      table.string('lago_subscription_id').notNullable
+      table.string('lago_wallet_id').nullable()
 
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').nullable()

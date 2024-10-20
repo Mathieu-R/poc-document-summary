@@ -36,7 +36,6 @@ export default class AuthController {
         return response.redirect('/')
       }
 
-      user.lagoExternalCustomerId = customerId
       const subscriptionId = await this.lagoService.assignCustomerToDefaultPlan(customerId)
 
       if (!subscriptionId) {
@@ -44,8 +43,8 @@ export default class AuthController {
       }
 
       user.lagoServicesCreated = true
-      user.lagoExternalSubscriptionId = customerId
-      user.lagoExternalSubscriptionId = subscriptionId
+      user.lagoCustomerId = customerId
+      user.lagoSubscriptionId = subscriptionId
       await user.save()
     }
 
