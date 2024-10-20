@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
+import Layout from '~/layout/layout'
 import {
-  Theme,
   Flex,
   Container,
   Select,
@@ -20,8 +20,10 @@ import {
   codPromptString,
   summarizePromptString,
 } from '../../resources/ts/utils/prompt'
+import { InferPageProps } from '@adonisjs/inertia/types'
+import HomeController from '#controllers/home_controller'
 
-export default function Home() {
+export default function Home({ user }: InferPageProps<HomeController, 'index'>) {
   const [summary, setSummary] = useState('')
   const [language, setLanguage] = useState('french')
   const [model, setModel] = useState<string>(OpenAIModels.GPT35Turbo)
@@ -33,8 +35,6 @@ export default function Home() {
   const fileRef = useRef<HTMLInputElement>(null)
 
   const handleSubmit = (evt: any) => {
-    console.log(evt)
-
     evt.preventDefault()
     setIsLoading(true)
 
@@ -53,7 +53,7 @@ export default function Home() {
   }
 
   return (
-    <Theme>
+    <Layout user={user}>
       <div className="grid grid-cols-2 gap-5">
         <div className="flex flex-col m-4">
           <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
@@ -159,6 +159,6 @@ export default function Home() {
           </Skeleton>
         </div>
       </div>
-    </Theme>
+    </Layout>
   )
 }

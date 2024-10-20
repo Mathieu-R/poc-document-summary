@@ -2,8 +2,13 @@ import type { HttpContext } from '@adonisjs/core/http'
 import vine from '@vinejs/vine'
 
 import { getModel, makeSummary } from '#services/summary'
+import LagoService from '#services/lago'
+import { inject } from '@adonisjs/core'
 
+@inject()
 export default class UploadsController {
+  constructor(private lagoService: LagoService) {}
+
   static validator = vine.compile(
     vine.object({
       pdf: vine.file({
@@ -13,7 +18,8 @@ export default class UploadsController {
     })
   )
 
-  async createSummary({ request }: HttpContext) {
+  async createSummary({ request, auth }: HttpContext) {
+    const { user } = auth
     // https://docs.adonisjs.com/guides/basics/file-uploads#file-properties
     const { summaryPrompt, combinePrompt } = request.body()
     const { model, language } = request.qs()
@@ -26,14 +32,20 @@ export default class UploadsController {
 
     const modelInstance = getModel(model)
 
-    const summary = await makeSummary(
-      modelInstance,
-      summaryPrompt,
-      combinePrompt,
-      language,
-      document.tmpPath!
-    )
+    try {
+      const summary = await makeSummary(
+        modelInstance,
+        summaryPrompt,
+        combinePrompt,
+        language,
+        document.tmpPath!
+      )
 
-    return summary
+      await this.lagoService.useSummary(user!.lagoExternalSubscriptionId)
+
+      return summary
+    } catch (err) {
+      console.log(err)
+    }
   }
 }

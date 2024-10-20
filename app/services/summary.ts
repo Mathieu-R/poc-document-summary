@@ -1,9 +1,11 @@
+import crypto from 'node:crypto'
 import { TokenTextSplitter } from '@langchain/textsplitters'
-import { ChatMistralAI } from '@langchain/mistralai'
+//import { ChatMistralAI } from '@langchain/mistralai'
 import { ChatOpenAI } from '@langchain/openai'
 import { StringOutputParser } from '@langchain/core/output_parsers'
 import { RunnableSequence } from '@langchain/core/runnables'
 import { PromptTemplate } from '@langchain/core/prompts'
+import { createHeaders, PORTKEY_GATEWAY_URL } from 'portkey-ai'
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
 
 // @ts-ignore
@@ -14,6 +16,22 @@ import env from '#start/env'
 
 type IOpenAiModels = 'gpt-3.5-turbo' | 'gpt-4o-mini' | 'gpt-4o'
 type IMistralModels = 'open-mistral-nemo' | 'mistral-small-latest' | 'mistral-large-latest'
+
+const portKeyOpenAIConf = {
+  baseUrl: PORTKEY_GATEWAY_URL,
+  defaultHeaders: createHeaders({
+    apiKey: env.get('PORTKEY_KEY'),
+    virtualKey: env.get('OPENAI_VKEY'),
+  }),
+}
+
+const portKeyMistralConf = {
+  baseUrl: PORTKEY_GATEWAY_URL,
+  defaultHeaders: createHeaders({
+    apiKey: env.get('PORTKEY_KEY'),
+    virtualKey: env.get('MISTRAL_VKEY'),
+  }),
+}
 
 const llmCallbacks = [
   {
@@ -35,11 +53,21 @@ const commonChatOptions = {
 
 export function getModel(modelName: IOpenAiModels | IMistralModels) {
   if (modelName.includes('gpt')) {
-    return new ChatOpenAI({ ...commonChatOptions, apiKey: env.get('OPENAI_KEY'), modelName })
+    return new ChatOpenAI({
+      ...commonChatOptions,
+      openAIApiKey: env.get('OPENAI_KEY'),
+      model: modelName,
+      configuration: portKeyOpenAIConf,
+    })
   }
 
   if (modelName.includes('mistral')) {
-    return new ChatMistralAI({ ...commonChatOptions, apiKey: env.get('MISTRAL_KEY'), modelName })
+    return new ChatOpenAI({
+      ...commonChatOptions,
+      apiKey: 'X', //env.get('MISTRAL_KEY'),
+      model: modelName,
+      configuration: portKeyMistralConf,
+    })
   }
 
   throw new Error('LLM model unsupported...')
@@ -60,6 +88,7 @@ export async function makeSummary(
 
   // 2. check if whole document is short enought to pass directly to the LLM
   const numTokensInWholeDoc = await model.getNumTokens(docs[0].pageContent)
+
   // map: associate each document content with its summary
   // RunnableSequence = sequence of runnable (output of each runnable is the input of the next one)
   const mapChain = RunnableSequence.from([
@@ -69,6 +98,7 @@ export async function makeSummary(
   ]).withConfig({ runName: 'Summarize a document batch' })
 
   if (numTokensInWholeDoc <= MAX_TOKEN_PER_DOC) {
+    console.log('HELLO')
     return mapChain.invoke({ content: docs[0].pageContent, language })
   }
 

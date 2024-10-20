@@ -13,7 +13,12 @@ MISTRAL_KEY=
 OPENAI_KEY=
 ```
 
-Then 
+Then generate an app key
+```
+node ace generate:key
+```
+
+Finally 
 ```
 pnpm install
 pnpm run dev
