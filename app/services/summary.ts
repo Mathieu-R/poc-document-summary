@@ -18,18 +18,20 @@ type IOpenAiModels = 'gpt-3.5-turbo' | 'gpt-4o-mini' | 'gpt-4o'
 type IMistralModels = 'open-mistral-nemo' | 'mistral-small-latest' | 'mistral-large-latest'
 
 const portKeyOpenAIConf = {
-  baseUrl: PORTKEY_GATEWAY_URL,
+  baseURL: PORTKEY_GATEWAY_URL,
   defaultHeaders: createHeaders({
     apiKey: env.get('PORTKEY_KEY'),
     virtualKey: env.get('OPENAI_VKEY'),
+    provider: 'open-ai',
   }),
 }
 
 const portKeyMistralConf = {
-  baseUrl: PORTKEY_GATEWAY_URL,
+  baseURL: PORTKEY_GATEWAY_URL,
   defaultHeaders: createHeaders({
     apiKey: env.get('PORTKEY_KEY'),
     virtualKey: env.get('MISTRAL_VKEY'),
+    provider: 'mistral',
   }),
 }
 
@@ -51,13 +53,14 @@ const commonChatOptions = {
   callbacks: llmCallbacks,
 }
 
-export function getModel(modelName: IOpenAiModels | IMistralModels) {
+export function getModel(modelName: IOpenAiModels | IMistralModels, customerId: string) {
   if (modelName.includes('gpt')) {
     return new ChatOpenAI({
       ...commonChatOptions,
-      openAIApiKey: env.get('OPENAI_KEY'),
+      apiKey: 'X',
       model: modelName,
       configuration: portKeyOpenAIConf,
+      user: customerId,
     })
   }
 
@@ -67,6 +70,7 @@ export function getModel(modelName: IOpenAiModels | IMistralModels) {
       apiKey: 'X', //env.get('MISTRAL_KEY'),
       model: modelName,
       configuration: portKeyMistralConf,
+      user: customerId,
     })
   }
 

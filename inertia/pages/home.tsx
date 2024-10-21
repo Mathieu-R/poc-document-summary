@@ -78,7 +78,7 @@ export default function Home({ user }: InferPageProps<HomeController, 'index'>) 
               <label htmlFor="model">Model</label>
               <Select.Root
                 onValueChange={(value) => setModel(value)}
-                defaultValue={OpenAIModels.GPT35Turbo}
+                defaultValue={OpenAIModels.GPT4oMini}
               >
                 <Select.Trigger />
                 <Select.Content>

@@ -56,16 +56,18 @@ export default class LagoService {
         },
         json: {
           wallet: {
-            rate_amount: WALLET_RATE_AMOUNT,
+            rate_amount: WALLET_RATE_AMOUNT.toString(),
             currency: 'EUR',
-            paid_credits: initialCredits,
+            paid_credits: initialCredits.toString(),
             external_customer_id: customerId,
           },
         },
       })
       .json()
 
-    return response.lago_id
+    console.log(response)
+
+    return response.wallet.lago_id
   }
 
   async updateWallet(walletId: string, credits: number) {
@@ -76,7 +78,7 @@ export default class LagoService {
       json: {
         wallet_transaction: {
           wallet_id: walletId,
-          paid_credits: credits,
+          paid_credits: credits.toString(),
         },
       },
     })

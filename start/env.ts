@@ -34,7 +34,6 @@ export default await Env.create(new URL('../', import.meta.url), {
   LAGO_URL: Env.schema.string(),
   LAGO_KEY: Env.schema.string(),
 
-  PORTKEY_GATEWAY_URL: Env.schema.string(),
   PORTKEY_KEY: Env.schema.string(),
 
   /*
@@ -56,7 +55,4 @@ export default await Env.create(new URL('../', import.meta.url), {
   GITHUB_CLIENT_ID: Env.schema.string(),
   GITHUB_CLIENT_SECRET: Env.schema.string(),
   GITHUB_CALLBACK_URL: Env.schema.string(),
-  GOOGLE_CLIENT_ID: Env.schema.string(),
-  GOOGLE_CLIENT_SECRET: Env.schema.string(),
-  GOOGLE_CALLBACK_URL: Env.schema.string(),
 })

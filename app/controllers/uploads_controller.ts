@@ -30,7 +30,7 @@ export default class UploadsController {
       return
     }
 
-    const modelInstance = getModel(model)
+    const modelInstance = getModel(model, user!.lagoCustomerId)
 
     try {
       const summary = await makeSummary(
@@ -41,7 +41,7 @@ export default class UploadsController {
         document.tmpPath!
       )
 
-      await this.lagoService.useSummary(user!.lagoExternalSubscriptionId)
+      await this.lagoService.useSummary(user!.lagoSubscriptionId)
 
       return summary
     } catch (err) {

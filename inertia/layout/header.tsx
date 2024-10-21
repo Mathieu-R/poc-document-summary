@@ -5,7 +5,7 @@ import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import { InferPageProps } from '@adonisjs/inertia/types'
 import HomeController from '#controllers/home_controller'
 
-import env from '#start/env'
+import { LAGO_URL } from '../../resources/ts/config'
 
 type User = InferPageProps<HomeController, 'index'>
 
@@ -64,17 +64,23 @@ export default function Header({ user }: User) {
   const [totalCredits, setTotalCredits] = useState(undefined)
 
   useEffect(() => {
-    if (!user) {
+    console.log(user)
+
+    if (!user || !user.lagoWalletId) {
       return
     }
 
-    fetch(`${env.get('LAGO_URL')}/wallets/${user.lagoWalletId}`)
+    fetch(`${LAGO_URL}/wallets/${user.lagoWalletId}`, {
+      headers: {
+        authorization: 'Bearer 8de63c9a-e817-4bc7-84f2-73b0e27c26fa',
+      },
+    })
       .then((response) => response.json())
       .then((response) => {
         setUsedCredits(response.consumed_credits)
         setTotalCredits(response.credits_balance)
       })
-  })
+  }, [user && user.lagoWalletId])
 
   return user
     ? renderAuthenticatedHeader(user, usedCredits, totalCredits)

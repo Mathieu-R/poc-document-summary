@@ -26,6 +26,7 @@ export default class CreditsController {
 
     if (!user.lagoWalletId) {
       user.lagoWalletId = await this.lagoService.createWallet(user.lagoCustomerId!, amount)
+      await user.save()
     } else {
       await this.lagoService.updateWallet(user.lagoWalletId, amount)
     }
