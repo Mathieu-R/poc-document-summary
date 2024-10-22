@@ -8,6 +8,7 @@ Summarize PDF documents.
 
 You need to set the following env variable in `.env` file
 
+First grab OpenAI et Mistral API keys
 ```
 MISTRAL_KEY=
 OPENAI_KEY=
@@ -16,16 +17,18 @@ OPENAI_KEY=
 Then, you have to get a Github Oauth2 keys.    
 Go to https://github.com/settings/developers and create a new project. Take note of **Client ID**, **Client secret**.    
 Then set **Application Name**, **Homepage URL** to `http://localhost:3333` and **Authorization callback URL** to `http://localhost:3333/login/github/callback`.    
-
 ```
 GITHUB_CLIENT_ID=
 GITHUB_CLIENT_SECRET=
 GITHUB_CALLBACK_URL=
 ```
 
+Clone Lago and run it locally with Docker (see instructions here: https://getlago.com/docs/guide/self-hosted/docker)
+
 Then, you need to set the LAGO API key and PORTKEY API key.     
-You can get them in their respective dashboards.   
-You're likely to run LAGO locally.
+You can get them in their respective dashboards: 
+- Lago (local): http://localhost/developers
+- PortKey: https://app.portkey.ai/api-keys
 ```
 LAGO_URL=http://localhost:3000/api/v1
 LAGO_KEY=
@@ -33,7 +36,7 @@ LAGO_KEY=
 PORTKEY_KEY=
 ```
 
-You need to generate virtual keys for the LLMs in the PortKey dashboard.
+You need to generate virtual keys for the LLMs in the PortKey dashboard (https://app.portkey.ai/virtual-keys).    
 ```
 MISTRAL_VKEY=
 OPENAI_VKEY=
